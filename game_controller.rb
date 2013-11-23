@@ -10,11 +10,18 @@ class GameController
 
   def run_game
     until current_game.finished?
-      view.print_board(current_game.board)
-      move = get_player_input(player_turn)
-      make_move(player_turn, move)
-      check_winner(player_turn)
-      change_turns
+      if current_game.current_player_turn == 1
+        view.print_board(current_game.board)
+        move = get_player_input(player_turn)
+        make_move(player_turn, move)
+        check_winner(player_turn)
+        change_turns
+      else
+        computer = GameAI.new(current_game)
+        make_move(player_turn, computer.move)
+        check_winner(player_turn)
+        change_turns
+      end
     end
     view.finished_view(current_game)
   end

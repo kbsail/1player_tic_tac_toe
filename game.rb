@@ -1,6 +1,7 @@
 require_relative('game_controller')
 require_relative('player')
 require_relative('view')
+require_relative('game_ai')
 
 class Game
 
