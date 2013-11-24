@@ -1,6 +1,16 @@
 class View
-  def give_feedback
-    puts "Nice move!"
+  def give_feedback(move, player)
+    if player == 2
+      puts "#######################"
+      puts ""
+      puts "The computer has now chosen space #{move}."
+      puts ""
+    else
+      puts "#######################"
+      puts ""
+      puts "NICE MOVE!"
+      puts ""
+    end
   end 
 
   def get_input

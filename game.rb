@@ -27,19 +27,28 @@ class Game
     end
   end
 
-  def two_in_a_row(winning_combo, player)
-    if board[winning_combo[1]] == player
-      if board[winning_combo[0]] == board[winning_combo[1]] && board[winning_combo[0]] == player
+  def check_for_player(combo, board, player)
+    combo.each do |space|
+      return true if board[space] == player
+    end
+    false
+  end
+
+  def two_inline(winning_combo, player)
+    if check_for_player(winning_combo, board, player)
+      if board[winning_combo[0]] == board[winning_combo[1]] && board[winning_combo[2]] == 0
         winning_combo[2]
-      elsif board[winning_combo[1]] == board[winning_combo[2]] 
+      elsif board[winning_combo[1]] == board[winning_combo[2]] && board[winning_combo[0]] == 0
         winning_combo[0]
+      elsif board[winning_combo[0]] == board[winning_combo[2]] && board[winning_combo[1]] == 0
+        winning_combo[1]
       end
     end
   end
 
   def check_two(player)
     winning_combos.each do |winning_combo|
-        open_space = two_in_a_row(winning_combo, player)
+        open_space = two_inline(winning_combo, player)
         return open_space if !open_space.nil?
     end
     nil
@@ -68,7 +77,7 @@ class Game
   end
 
   def set_player(input, player_num)
-    board[input] = player_num
+    board[input.to_i] = player_num
   end
 
   def draw?

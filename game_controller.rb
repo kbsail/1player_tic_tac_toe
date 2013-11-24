@@ -45,7 +45,7 @@ class GameController
 
   def make_move(player, move)
     current_game.set_player(move, player)
-    self.view.give_feedback
+    self.view.give_feedback(move, player)
   end
 
   def get_player_input(player)
