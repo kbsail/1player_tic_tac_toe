@@ -22,9 +22,7 @@ class Game
   end  
 
   def three_in_a_row(winning_combo, player)
-    if check_for_player(winning_combo, board, player)
-      [board[winning_combo[0]], board[winning_combo[1]], board[winning_combo[2]]].uniq.length == 1
-    end
+    board_spaces(winning_combo).count(player) == 3
   end
 
   def check_for_player(combo, board, player)
