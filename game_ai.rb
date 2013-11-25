@@ -23,6 +23,8 @@ class GameAI
   def ai_second_move
     if win_lose
       win_lose
+    elsif opposite_corners
+      1
     else
       open_corner
     end
@@ -32,10 +34,8 @@ class GameAI
     [0, 2, 6, 8].find {|space| game_board[space] == 0 }
   end
 
-  def oposite_corners
-    if game_board[0] == game_board[8] || game_board[2] == game_board[6]
-      open_corner
-    end
+  def opposite_corners
+    game_board[0] == game_board[8] || game_board[2] == game_board[6]
   end
 
   def win_lose

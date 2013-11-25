@@ -22,7 +22,7 @@ class Game
   end  
 
   def three_in_a_row(winning_combo, player)
-    if board[winning_combo[1]] == player
+    if check_for_player(winning_combo, board, player)
       [board[winning_combo[0]], board[winning_combo[1]], board[winning_combo[2]]].uniq.length == 1
     end
   end
@@ -34,24 +34,24 @@ class Game
     false
   end
 
+  def board_spaces(winning_combo)
+    winning_combo.map {|space| board[space] } 
+  end
+
   def two_inline(winning_combo, player)
-    if check_for_player(winning_combo, board, player)
-      if board[winning_combo[0]] == board[winning_combo[1]] && board[winning_combo[2]] == 0
-        winning_combo[2]
-      elsif board[winning_combo[1]] == board[winning_combo[2]] && board[winning_combo[0]] == 0
-        winning_combo[0]
-      elsif board[winning_combo[0]] == board[winning_combo[2]] && board[winning_combo[1]] == 0
-        winning_combo[1]
-      end
+    if board_spaces(winning_combo).count(player) == 2 && board_spaces(winning_combo).include?(0)
+      winning_combo.each {|space| return space if board[space] == 0 }
     end
   end
 
   def check_two(player)
     winning_combos.each do |winning_combo|
-        open_space = two_inline(winning_combo, player)
-        return open_space if !open_space.nil?
+      open_space = two_inline(winning_combo, player)
+      return open_space if !open_space.nil?
     end
+    
     nil
+  
   end
 
   def check_win(player)
@@ -61,19 +61,21 @@ class Game
         return true
       end
     end
+    
     false
+  
   end
 
   def current_player_turn
     turns % 2 == 0 ? 1 : 2
   end
 
-  def check_space(input)
+  def space_open?(input)
     board[input] == 0
   end
 
   def open_spaces
-    board.map.with_index { |space, index| index if check_space(index) }.compact
+    board.map.with_index { |space, index| index if space_open?(index) }.compact
   end
 
   def set_player(input, player_num)

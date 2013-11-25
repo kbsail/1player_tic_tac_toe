@@ -26,8 +26,8 @@ class GameController
     view.finished_view(current_game)
   end
 
-  def check_space_availability(input)
-    if current_game.open_spaces.include?(input)
+  def check_space_availability(space)
+    if current_game.space_open?(space)
       true
     else
       self.view.invalid_entry
