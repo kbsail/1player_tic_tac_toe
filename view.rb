@@ -1,4 +1,5 @@
 class View
+  
   def give_feedback(move, player)
     if player == 2
       puts "#######################"
