@@ -84,25 +84,25 @@ class Game
 
   # returns the empty space if a player has two spaces in a row followed by an empty space
   def two_inline(winning_combo, two_count, one_count)
-    if board_spaces(winning_combo).count(two_count) == 2 && board_spaces(winning_combo).include?(one_count)
-      winning_combo.each {|space| return space if board[space] == 0 }
+    if board_spaces(winning_combo).count(two_count) == 2 && board_spaces(winning_combo).count(one_count) == 1
+      winning_combo.find {|space| board[space] == 0 }
     end
   end
 
   # checks if a player has two in a row followed by an empty space
   def check_two(two_count, one_count)
+    open_space = nil
     winning_combos.each do |winning_combo|
-      open_space = two_inline(winning_combo, two_count, one_count)
-      return open_space if !open_space.nil?
+      open_space ||= two_inline(winning_combo, two_count, one_count)
     end
     
-    nil
+    open_space
   
   end
 
   # checks if a player has two middle spaces taken
   def two_middle(player)
-    board.each_with_index.map {|space, index| index % 2 if space == player  }.count(1) == 2
+    board.each_with_index.map {|space, index| index % 2 if space == player  }.count(player) == 2
   end
 
 end

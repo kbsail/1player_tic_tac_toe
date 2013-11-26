@@ -84,7 +84,7 @@ describe GameAI do
       end
     end
 
-      ##########################################################
+    ##########################################################
 
     describe 'the computer\'s second turn' do
       before do
@@ -114,13 +114,63 @@ describe GameAI do
       context 'with the human in opposite corners' do
         it 'takes a middle space' do
           game_ai.current_game.board = [1, 0, 0, 0, 2, 0, 0, 0, 1] 
-          game_ai.move
-          expect(current_game.check_two(2, 0)).to eq(3)
+          expect( game_ai.move ).to eq(3)
+        end
+      end
+
+      context 'with the human in two middle spaces' do
+        it 'blocks entrapment' do
+          game_ai.current_game.board = [0, 1, 0, 1, 2, 0, 0, 0, 0] 
+          expect( game_ai.move ).to eq(0)
         end
       end
 
       context 'without needing a defensive move' do
-        it 'takes begins attacking' do
+        it 'begins attacking' do
+          game_ai.current_game.board = [0, 1, 0, 0, 2, 0, 0, 1, 0] 
+          expect( game_ai.move ).to eq(3)
+        end
+      end
+
+    end
+
+    ##########################################################
+
+    describe 'the computer\'s third turn' do
+      before do
+        game_ai.current_game.stub(:turns).and_return(5)
+      end
+
+      it 'calls #ai_third_move' do
+        game_ai.stub(:ai_third_move)
+        expect(game_ai).to receive(:ai_third_move)
+        game_ai.move
+      end
+      
+      context 'when the human can win' do
+        it 'returns the space to block the human' do
+          game_ai.current_game.board = [2, 1, 1, 1, 1, 0, 0, 0, 0]
+          expect( game_ai.move ).to eq(5)
+        end
+      end
+
+      context 'when not threatened' do
+        it 'takes a corner space' do
+          game_ai.current_game.board = [0, 1, 2, 0, 2, 1, 1, 0, 0]
+          expect( game_ai.move ).to eq(0)
+        end
+      end
+
+      context 'with the human in opposite corners' do
+        it 'takes a middle space' do
+          game_ai.current_game.board = [1, 0, 0, 0, 2, 0, 0, 0, 1] 
+          game_ai.move
+          expect(game_ai.game_board[4]).to eq(2)
+        end
+      end
+
+      context 'without needing a defensive move' do
+        it 'begins attacking' do
           game_ai.current_game.board = [0, 1, 0, 0, 2, 0, 0, 1, 0] 
           expect( game_ai.move ).to eq(3)
         end

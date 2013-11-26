@@ -43,12 +43,16 @@ class GameAI
   def ai_second_move
     if stacked?
       open_corners.first
+    elsif analyze_traps
+      prevent_entrapment(analyze_traps)
+    elsif analyze_another_trap
+      prevent_another_trap
     else
       look_three
     end
   end
 
-  # checks if the human has 2 non-corner / center placements. If not, it goes on the offensive. If not possible, it does a random placement
+  # checks if the human has 2 non-corner spaces & center space. If not, it goes on the offensive. If not possible, it does a random placement
   def ai_third_move
     if look_non_corner
       open_corners.last
@@ -88,11 +92,9 @@ class GameAI
 
   # Checks the opposite corenr of the computer space and the center space - dangerous on the second move
   def stacked?
+    stack = [[0, 8], [2, 6]]
     if game_board[4] == 1
-      game_board[0] == 1 && game_board[8] == 2 || 
-      game_board[2] == 1 && game_board[6] == 2 ||
-      game_board[6] == 1 && game_board[2] == 2 ||
-      game_board[8] == 1 && game_board[0] == 2
+      stack.each { |combo| return true if game_board[combo[0]] != 0 && game_board[combo[1]] != 0 }
     end
   end
 
@@ -101,14 +103,53 @@ class GameAI
     [0, 2, 6, 8].select {|space| game_board[space] == 0 }
   end
 
-  # looks three spaces in a row that does not have a human blocking it (can have the computer already in the row or not)
+  # looks for line of one computer space and two open spaces
   def look_three
     current_game.check_two(0, 2)
   end
 
-  # checks if the human has 2 non-corner / center spaces occupied (spaces 1, 3, 5, 7)
+  # checks if the human has 2 non-corner spaces & center space occupied (spaces 1, 3, 5, 7)
   def look_non_corner
-    current_game.two_middle(1)
+    current_game.two_middle(1) && game_board[4] == 1
+  end
+
+  def traps
+    [[1, 3], [1, 5], [5, 7], [3, 7]]
+  end
+
+  def analyze_traps
+    trap_indexes = nil
+    traps.each do |trap| 
+      trap_indexes = trap if game_board[trap[0]] == 1 && game_board[trap[1]] == 1
+    end
+    trap_indexes
+  end
+
+  # prevents entrapment
+  def prevent_entrapment(trap)
+    (trap.reduce(:+) - 4)
+  end
+
+  # prevents other entrapment
+  def analyze_another_trap
+    player_positions = player_indexes(1)
+    human_has_corner && player_positions[1] - player_positions[0] == 5
+  end
+
+  def prevent_another_trap
+    return 0 if player_indexes(1).reduce(:+) == 7
+    return 2 if player_indexes(1).reduce(:+) == 5
+    return 8 if player_indexes(1).reduce(:+) == 9
+    return 6 if player_indexes(1).reduce(:+) == 11
+  end
+
+  # returns the indexes of a player on the board
+  def player_indexes(player)
+    game_board.each_index.select { |index| game_board[index] == player}.sort
+  end
+
+  def human_has_corner
+    [0, 2, 6, 8].map { |space| game_board[space] }.include?(1)
   end
 
   # shows the game's board
