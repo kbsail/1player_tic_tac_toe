@@ -1,8 +1,8 @@
-2player_tic_tac_toe
+1player_tic_tac_toe
 ===================
 
 
-Welcome! This is my unbeatable 2 person tic tac toe. This was built in stages. 
+Welcome! This is my unbeatable 1 person tic tac toe. This was built in stages. 
 
 I used TDD to build a 2player tic tac toe. 
 
